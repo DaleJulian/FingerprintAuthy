@@ -60,14 +60,15 @@ public class SensitiveInfoAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = mActivity.getLayoutInflater().inflate(R.layout.sensitive_data_entry, parent, false);
             viewHolder = new ViewHolder(convertView);
-            convertView.setTag(viewHolder);
+            convertView.setTag(R.id.TAG_SENSITIVE_INFO, viewHolder);
         } else {
-            viewHolder = (ViewHolder) convertView.getTag();
+            viewHolder = (ViewHolder) convertView.getTag(R.id.TAG_SENSITIVE_INFO);
         }
 
         SensitiveInfo sensitiveInfo = mSensitiveInfoList.get(position);
 
         viewHolder.name.setText(sensitiveInfo.getName());
+        convertView.setTag(R.id.TAG_SENSITIVE_INFO_ENTRY, sensitiveInfo);
         return convertView;
     }
 

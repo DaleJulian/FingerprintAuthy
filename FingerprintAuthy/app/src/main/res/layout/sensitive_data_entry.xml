@@ -6,6 +6,7 @@
     android:paddingBottom="5dp">
 
     <RelativeLayout
+        android:id="@+id/sensitive_info_entry"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

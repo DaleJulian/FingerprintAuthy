@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import klab.dale.fingerprintauthy.R;
@@ -23,7 +25,7 @@ import klab.dale.fingerprintauthy.models.SensitiveInfo;
  * Use the {@link AddInfoFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddInfoFragment extends Fragment {
+public class AddInfoFragment extends Fragment implements AdapterView.OnItemClickListener{
 
     private ListView mSensitiveInfoList;
     private SensitiveInfoAdapter mSensitiveInfoAdapter;
@@ -33,18 +35,18 @@ public class AddInfoFragment extends Fragment {
         mSensitiveInfoAdapter = new SensitiveInfoAdapter(getActivity(), mClickListener);
         mSensitiveInfoList.setAdapter(mSensitiveInfoAdapter);
 
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
+        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe1"));
+        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe2"));
+        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe3"));
+        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe4"));
+        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe5"));
+        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe6"));
+        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe7"));
+        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe8"));
+        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe9"));
+        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe10"));
+        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe11"));
+        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe12"));
         mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
         mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
         mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
@@ -58,7 +60,11 @@ public class AddInfoFragment extends Fragment {
     private View.OnClickListener mClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            switch (v.getId()) {
+                case (R.id.sensitive_info_entry):
+                    Log.i("Dale", "tapped");
+                    break;
+            }
         }
     };
 
@@ -112,6 +118,9 @@ public class AddInfoFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_info, container, false);
         setupSensitiveInfoList(view);
+
+        mSensitiveInfoList.setOnItemClickListener(this);
+
         return view;
     }
 
@@ -139,6 +148,12 @@ public class AddInfoFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        SensitiveInfo sensitiveInfo = (SensitiveInfo) view.getTag(R.id.TAG_SENSITIVE_INFO_ENTRY);
+        Log.i("Dale", sensitiveInfo.getName());
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -153,4 +168,5 @@ public class AddInfoFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }
