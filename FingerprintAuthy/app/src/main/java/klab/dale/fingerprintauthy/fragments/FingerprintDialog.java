@@ -1,12 +1,14 @@
 package klab.dale.fingerprintauthy.fragments;
 
 import android.app.DialogFragment;
+import android.graphics.Color;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import klab.dale.fingerprintauthy.R;
@@ -20,6 +22,10 @@ public class FingerprintDialog extends DialogFragment implements FingerprintHand
     public static final String SENSITIVE_INFO_BUNDLE_KEY = "sensitive_info_bundle_key69";
 
     private SecurityManager mFingerprintSecurityManager;
+
+    private int triesLeft;
+
+    private TextView triesLeftVal;
 
     public FingerprintDialog() {
     }
@@ -55,6 +61,10 @@ public class FingerprintDialog extends DialogFragment implements FingerprintHand
             helper.expectFingerprintAuthentication(mFingerprintSecurityManager.getFingerprintManager(), mFingerprintSecurityManager.getCryptoObject());
         }
 
+        triesLeftVal = ((TextView) fragmentContent.findViewById(R.id.tries_left));
+        triesLeft = 3;
+        triesLeftVal.setText(String.valueOf(triesLeft));
+
         return fragmentContent;
     }
 
@@ -78,11 +88,19 @@ public class FingerprintDialog extends DialogFragment implements FingerprintHand
     @Override
     public void onAuthenticationSuccess() {
         Log.i("Dale", "success");
+        ((ImageView) getView().findViewById(R.id.fingerprint_icon)).setImageResource(R.drawable.check);
     }
 
     @Override
     public void onAuthenticationFailed() {
-        Log.i("Dale", "failed");
+        triesLeft--;
+        triesLeftVal.setText(String.valueOf(triesLeft));
+        if(triesLeft <= 1) {
+            triesLeftVal.setTextColor(Color.RED);
+
+            if(triesLeft <= 0) {
+            }
+        }
     }
 
     @Override
@@ -93,5 +111,9 @@ public class FingerprintDialog extends DialogFragment implements FingerprintHand
     @Override
     public void onAuthenticationError() {
         Log.i("Dale", "error");
+    }
+
+    private void displayAuthenticationSuccessPopup () {
+
     }
 }

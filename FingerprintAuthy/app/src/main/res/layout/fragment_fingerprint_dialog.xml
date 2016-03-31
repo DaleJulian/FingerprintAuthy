@@ -4,60 +4,73 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="8dp"
-    android:paddingStart="24dp"
     android:paddingEnd="24dp"
+    android:paddingStart="24dp"
     android:paddingTop="16dp">
 
     <TextView
         android:id="@+id/sensitive_info_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Attempting to open info: "
         android:layout_centerHorizontal="true"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:text="Attempting to open info: " />
 
     <TextView
         android:id="@+id/fingerprint_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Authentication Required"
+        android:layout_alignParentTop="true"
         android:layout_below="@id/sensitive_info_name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:text="Authentication Required"
         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
         android:textColor="?android:attr/textColorPrimary"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:layout_marginTop="25dp"
-        android:textSize="20dp"/>
+        android:textSize="20dp" />
 
     <TextView
         android:id="@+id/fingerprint_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Place registered finger on scanner for authentication"
-        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-        android:textColor="?android:attr/textColorSecondary"
+        android:layout_below="@id/fingerprint_title"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:layout_below="@id/fingerprint_title"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:text="Place registered finger on scanner for authentication"
+        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+        android:textColor="?android:attr/textColorSecondary" />
 
 
     <ImageView
         android:id="@+id/fingerprint_icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@drawable/ic_fp_40px"
         android:layout_below="@+id/fingerprint_description"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp" />
+        android:layout_marginTop="25dp"
+        android:background="@drawable/ic_fp_40px" />
 
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
         android:layout_below="@id/fingerprint_icon"
         android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:text="Tries left: 3"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp" >
+
+        <TextView
+            android:id="@+id/tries_left_lbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tries left: " />
+
+        <TextView
+            android:id="@+id/tries_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tries_left_lbl" />
+    </LinearLayout>
 </RelativeLayout>
