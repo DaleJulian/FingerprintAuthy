@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="TAG_SENSITIVE_INFO" type="id" value="integer"/>
+    <item name="TAG_SENSITIVE_INFO_ENTRY" type="id" value="integer"/>
+</resources>
