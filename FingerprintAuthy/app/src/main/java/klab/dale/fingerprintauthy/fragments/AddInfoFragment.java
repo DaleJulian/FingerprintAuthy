@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -25,36 +27,27 @@ import klab.dale.fingerprintauthy.models.SensitiveInfo;
  * Use the {@link AddInfoFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddInfoFragment extends Fragment implements AdapterView.OnItemClickListener{
+public class AddInfoFragment extends Fragment implements AdapterView.OnItemClickListener, FingerprintDialog.OnFragmentInteractionListener {
 
     private ListView mSensitiveInfoList;
     private SensitiveInfoAdapter mSensitiveInfoAdapter;
+
+    private FingerprintDialog mFingerprintDialogFrag;
 
     private void setupSensitiveInfoList(View view) {
         mSensitiveInfoList = (ListView) view.findViewById(R.id.dataListView);
         mSensitiveInfoAdapter = new SensitiveInfoAdapter(getActivity(), mClickListener);
         mSensitiveInfoList.setAdapter(mSensitiveInfoAdapter);
 
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe1"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe2"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe3"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe4"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe5"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe6"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe7"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe8"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe9"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe10"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe11"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe12"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Hehe"));
+        for (int i  = 0; i < 3; i++) {
+            mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Credit card # " + String.valueOf(i)));
+        }
+        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Facebook account"));
+        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Twitter account"));
+        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Debit card"));
+        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Server credentials"));
+        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Admin account info"));
+
     }
 
     private View.OnClickListener mClickListener = new View.OnClickListener() {
@@ -134,12 +127,6 @@ public class AddInfoFragment extends Fragment implements AdapterView.OnItemClick
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
@@ -148,10 +135,22 @@ public class AddInfoFragment extends Fragment implements AdapterView.OnItemClick
         mListener = null;
     }
 
+    private static final String frag_tag = "myFragment";
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         SensitiveInfo sensitiveInfo = (SensitiveInfo) view.getTag(R.id.TAG_SENSITIVE_INFO_ENTRY);
         Log.i("Dale", sensitiveInfo.getName());
+        mFingerprintDialogFrag = new FingerprintDialog();
+        Bundle sensitiveInfoBundle = new Bundle();
+        sensitiveInfoBundle.putSerializable(FingerprintDialog.SENSITIVE_INFO_BUNDLE_KEY, sensitiveInfo);
+        mFingerprintDialogFrag.setArguments(sensitiveInfoBundle);
+        mFingerprintDialogFrag.show(getActivity().getFragmentManager(), frag_tag);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
     /**

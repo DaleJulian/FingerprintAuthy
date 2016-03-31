@@ -15,7 +15,7 @@ import klab.dale.fingerprintauthy.adapters.SensitiveInfoAdapter;
 import klab.dale.fingerprintauthy.fragments.AddInfoFragment;
 import klab.dale.fingerprintauthy.models.SensitiveInfo;
 
-public class MainActivity extends AppCompatActivity implements AddInfoFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity {
 
 
     @Override
@@ -61,8 +61,4 @@ public class MainActivity extends AppCompatActivity implements AddInfoFragment.O
         fragmentTransaction.commit();
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
 }

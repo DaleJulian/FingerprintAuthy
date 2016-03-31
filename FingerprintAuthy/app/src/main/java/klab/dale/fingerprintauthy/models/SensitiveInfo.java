@@ -1,9 +1,13 @@
 package klab.dale.fingerprintauthy.models;
 
+import java.io.Serializable;
+
 /**
  * Created by John Dale Julian on 3/29/2016.
  */
-public class SensitiveInfo {
+public class SensitiveInfo implements Serializable {
+
+    private static final long serialVersionUID = 8331197936200053548L;
 
     private String name;
 
