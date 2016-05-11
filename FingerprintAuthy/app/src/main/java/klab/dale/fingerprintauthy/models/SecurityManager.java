@@ -27,8 +27,6 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-
-import com.google.zxing.*;
 /**
  * Created by John Dale Julian on 3/31/2016.
  */

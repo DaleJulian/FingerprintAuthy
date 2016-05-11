@@ -1,5 +1,6 @@
 package klab.dale.fingerprintauthy.fragments;
 
+import android.animation.Animator;
 import android.app.DialogFragment;
 import android.graphics.Color;
 import android.hardware.fingerprint.FingerprintManager;
@@ -8,6 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import klab.dale.fingerprintauthy.R;
@@ -27,6 +31,8 @@ public class FingerprintDialog extends DialogFragment implements FingerprintHand
     private TextView triesLeftVal;
 
     SensitiveInfo sensitiveInfo;
+
+    private ImageView mFingerprintIcon;
 
     public FingerprintDialog() {
     }
@@ -77,14 +83,42 @@ public class FingerprintDialog extends DialogFragment implements FingerprintHand
 
     @Override
     public void onAuthenticationFailed() {
+        mFingerprintIcon = (ImageView) getView().findViewById(R.id.fingerprint_icon);
+
         triesLeft--;
         triesLeftVal.setText(String.valueOf(triesLeft));
         if(triesLeft <= 1) {
             triesLeftVal.setTextColor(Color.RED);
-
-            if(triesLeft <= 0) {
-            }
         }
+
+        Animation shakeAnimation = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.shake);
+        mFingerprintIcon.setAnimation(shakeAnimation);
+        mFingerprintIcon.animate().setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                Log.i("Dale", "onAnimationStart");
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                Log.i("Dale", "onAnimationEnd");
+                if(triesLeft == 0) {
+                    displayAuthenticationFailurePopup(sensitiveInfo);
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                Log.i("Dale", "onAnimationCancel");
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+                Log.i("Dale", "onAnimationRepeat");
+            }
+        }).start();
+
+
     }
 
     @Override
@@ -103,6 +137,15 @@ public class FingerprintDialog extends DialogFragment implements FingerprintHand
         bundle.putSerializable(SENSITIVE_INFO_BUNDLE_KEY, sensitiveInfo);
         authSuccessPopup.setArguments(bundle);
         authSuccessPopup.show(getActivity().getFragmentManager(), "myFrag");
+        dismiss();
+    }
+
+    private void displayAuthenticationFailurePopup (SensitiveInfo sensitiveInfo) {
+        FingerprintAuthFailure authFailurePopup= new FingerprintAuthFailure();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(SENSITIVE_INFO_BUNDLE_KEY, sensitiveInfo);
+        authFailurePopup.setArguments(bundle);
+        authFailurePopup.show(getActivity().getFragmentManager(), "myFrag");
         dismiss();
     }
 }
