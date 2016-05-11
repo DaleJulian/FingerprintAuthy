@@ -1,19 +1,14 @@
 package klab.dale.fingerprintauthy;
 
-import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ListView;
 
-import klab.dale.fingerprintauthy.adapters.SensitiveInfoAdapter;
-import klab.dale.fingerprintauthy.fragments.AddInfoFragment;
-import klab.dale.fingerprintauthy.models.SensitiveInfo;
+import klab.dale.fingerprintauthy.fragments.SensitiveInfoListFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -56,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        AddInfoFragment addInfoFragment = new AddInfoFragment();
+        SensitiveInfoListFragment addInfoFragment = new SensitiveInfoListFragment();
         fragmentTransaction.add(R.id.addInfoFragmentContainer, addInfoFragment);
         fragmentTransaction.commit();
     }

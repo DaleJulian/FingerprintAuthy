@@ -1,24 +1,40 @@
 package klab.dale.fingerprintauthy.fragments;
 
+import android.animation.Animator;
 import android.app.DialogFragment;
-import android.content.Context;
-import android.net.Uri;
+import android.graphics.Color;
+import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import klab.dale.fingerprintauthy.R;
-import klab.dale.fingerprintauthy.models.SensitiveInfo;
+import klab.dale.fingerprintauthy.models.*;
+import klab.dale.fingerprintauthy.models.Callbacks.FingerprintHandler;
+import klab.dale.fingerprintauthy.models.SecurityManager;
 
 
-public class FingerprintDialog extends DialogFragment {
+public class FingerprintDialog extends DialogFragment implements FingerprintHandler.OnFinishedAuthenticationListener {
 
     public static final String SENSITIVE_INFO_BUNDLE_KEY = "sensitive_info_bundle_key69";
 
+    private SecurityManager mFingerprintSecurityManager;
+
+    private int triesLeft;
+
+    private TextView triesLeftVal;
+
+    SensitiveInfo sensitiveInfo;
+
+    private ImageView mFingerprintIcon;
+
     public FingerprintDialog() {
-        // Required empty public constructor
     }
 
     // TODO: Rename and change types and number of parameters
@@ -32,8 +48,7 @@ public class FingerprintDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
+        mFingerprintSecurityManager = new SecurityManager(getActivity());
     }
 
     @Override
@@ -41,38 +56,99 @@ public class FingerprintDialog extends DialogFragment {
                              Bundle savedInstanceState) {
         View fragmentContent = inflater.inflate(R.layout.fragment_fingerprint_dialog, container, false);
         Bundle sensitiveInfoBundle = getArguments();
-        SensitiveInfo sensitiveInfo = (SensitiveInfo) sensitiveInfoBundle.getSerializable(SENSITIVE_INFO_BUNDLE_KEY);
+        sensitiveInfo = (SensitiveInfo) sensitiveInfoBundle.getSerializable(SENSITIVE_INFO_BUNDLE_KEY);
         ((TextView) fragmentContent.findViewById(R.id.sensitive_info_name)).setText("Attempting to open " + sensitiveInfo.getName() + " info");
+
+        triesLeftVal = ((TextView) fragmentContent.findViewById(R.id.tries_left));
+        triesLeft = 3;
+        triesLeftVal.setText(String.valueOf(triesLeft));
 
         return fragmentContent;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mFingerprintSecurityManager.isCipherInitialized()) {
+            mFingerprintSecurityManager.setCryptoObject(new FingerprintManager.CryptoObject(mFingerprintSecurityManager.getCipher()));
+            FingerprintHandler helper = new FingerprintHandler(getActivity(), mFingerprintSecurityManager, this);
+            helper.expectFingerprintAuthentication(mFingerprintSecurityManager.getFingerprintManager(), mFingerprintSecurityManager.getCryptoObject());
+        }
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }   
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
+    public void onAuthenticationSuccess() {
+        Log.i("Dale", "success");
+//        ((ImageView) getView().findViewById(R.id.fingerprint_icon)).setImageResource(R.drawable.check);
+        displayAuthenticationSuccessPopup(sensitiveInfo);
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public void onAuthenticationFailed() {
+        mFingerprintIcon = (ImageView) getView().findViewById(R.id.fingerprint_icon);
+
+        triesLeft--;
+        triesLeftVal.setText(String.valueOf(triesLeft));
+        if(triesLeft <= 1) {
+            triesLeftVal.setTextColor(Color.RED);
+        }
+
+        Animation shakeAnimation = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.shake);
+        mFingerprintIcon.setAnimation(shakeAnimation);
+        mFingerprintIcon.animate().setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                Log.i("Dale", "onAnimationStart");
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                Log.i("Dale", "onAnimationEnd");
+                if(triesLeft == 0) {
+                    displayAuthenticationFailurePopup(sensitiveInfo);
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                Log.i("Dale", "onAnimationCancel");
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+                Log.i("Dale", "onAnimationRepeat");
+            }
+        }).start();
+
+
+    }
+
+    @Override
+    public void onAuthenticationHelp() {
+        Log.i("Dale", "help");
+    }
+
+    @Override
+    public void onAuthenticationError() {
+        Log.i("Dale", "error");
+    }
+
+    private void displayAuthenticationSuccessPopup (SensitiveInfo sensitiveInfo) {
+        FingerprintAuthSuccess authSuccessPopup = new FingerprintAuthSuccess();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(SENSITIVE_INFO_BUNDLE_KEY, sensitiveInfo);
+        authSuccessPopup.setArguments(bundle);
+        authSuccessPopup.show(getActivity().getFragmentManager(), "myFrag");
+        dismiss();
+    }
+
+    private void displayAuthenticationFailurePopup (SensitiveInfo sensitiveInfo) {
+        FingerprintAuthFailure authFailurePopup= new FingerprintAuthFailure();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(SENSITIVE_INFO_BUNDLE_KEY, sensitiveInfo);
+        authFailurePopup.setArguments(bundle);
+        authFailurePopup.show(getActivity().getFragmentManager(), "myFrag");
+        dismiss();
     }
 }

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="klab.dale.fingerprintauthy.fragments.AddInfoFragment">
+    tools:context=".fragments.SensitiveInfoListFragment">
 
     <ListView
         android:id="@+id/dataListView"
