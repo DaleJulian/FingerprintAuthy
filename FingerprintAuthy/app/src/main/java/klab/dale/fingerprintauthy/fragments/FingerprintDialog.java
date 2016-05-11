@@ -59,12 +59,6 @@ public class FingerprintDialog extends DialogFragment implements FingerprintHand
         sensitiveInfo = (SensitiveInfo) sensitiveInfoBundle.getSerializable(SENSITIVE_INFO_BUNDLE_KEY);
         ((TextView) fragmentContent.findViewById(R.id.sensitive_info_name)).setText("Attempting to open " + sensitiveInfo.getName() + " info");
 
-        if (mFingerprintSecurityManager.isCipherInitialized()) {
-            mFingerprintSecurityManager.setCryptoObject(new FingerprintManager.CryptoObject(mFingerprintSecurityManager.getCipher()));
-            FingerprintHandler helper = new FingerprintHandler(getActivity(), mFingerprintSecurityManager, this);
-            helper.expectFingerprintAuthentication(mFingerprintSecurityManager.getFingerprintManager(), mFingerprintSecurityManager.getCryptoObject());
-        }
-
         triesLeftVal = ((TextView) fragmentContent.findViewById(R.id.tries_left));
         triesLeft = 3;
         triesLeftVal.setText(String.valueOf(triesLeft));
@@ -73,6 +67,15 @@ public class FingerprintDialog extends DialogFragment implements FingerprintHand
     }
 
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mFingerprintSecurityManager.isCipherInitialized()) {
+            mFingerprintSecurityManager.setCryptoObject(new FingerprintManager.CryptoObject(mFingerprintSecurityManager.getCipher()));
+            FingerprintHandler helper = new FingerprintHandler(getActivity(), mFingerprintSecurityManager, this);
+            helper.expectFingerprintAuthentication(mFingerprintSecurityManager.getFingerprintManager(), mFingerprintSecurityManager.getCryptoObject());
+        }
+    }
 
     @Override
     public void onAuthenticationSuccess() {

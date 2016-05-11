@@ -47,8 +47,9 @@ public class SecurityManager {
         mFingerprintManager = (FingerprintManager) mAppContext.getSystemService(Context.FINGERPRINT_SERVICE);
         mKeyguardManager = (KeyguardManager) mAppContext.getSystemService(Context.KEYGUARD_SERVICE);
 
-        generateKey();
-        validateSecurityMeasures();
+        if (isSecurityMeasuresValidated()) {
+            generateKey();
+        }
     }
 
     private void generateKey() {
@@ -150,28 +151,24 @@ public class SecurityManager {
         return mFingerprintManager;
     }
 
-    public KeyguardManager getKeyguardManager() {
-        return mKeyguardManager;
+    private boolean isSecurityMeasuresValidated() {
+        if (isKeyguardSecure()) {
+            if (isFingerprintPermissionGranted()) {
+                if (hasEnrolledFingerprints()) {
+                    return true;
+                } else {
+                    showToast("No enrolled fingerprints");
+                }
+            } else {
+                showToast("Fingerprint Permission not granted");
+            }
+        } else {
+            showToast("Lock screen security not enabled in settings");
+        }
+        return false;
     }
 
-    private void validateSecurityMeasures() {
-        if (isKeyguardSecure()) {
-            //// TODO: 3/31/2016  "Lock screen security not enabled in Settings"
-            Toast.makeText(mAppContext, "Lock screen security not enabled in Settings", Toast.LENGTH_LONG).show();
-            Log.i("Dale", "iskeyguardsecure");
-            return;
-        }
-
-        if (isFingerprintPermissionGranted()) {
-            ////// TODO: 3/31/2016 "Fingerprint authentication permission not enabled"
-            Log.i("Dale", "manifest permission for use fingerprint is granted");
-            return;
-        }
-
-        if (hasEnrolledFingerprints()) {
-            // TODO: "Register at least one fingerprint in Settings"
-            Log.i("Dale", "fingerprints are present");
-            return;
-        }
+    private void showToast(String message) {
+        Toast.makeText(mAppContext, message, Toast.LENGTH_LONG).show();
     }
 }
