@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import klab.dale.fingerprintauthy.R;
@@ -27,6 +26,8 @@ public class FingerprintDialog extends DialogFragment implements FingerprintHand
 
     private TextView triesLeftVal;
 
+    SensitiveInfo sensitiveInfo;
+
     public FingerprintDialog() {
     }
 
@@ -41,10 +42,7 @@ public class FingerprintDialog extends DialogFragment implements FingerprintHand
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
         mFingerprintSecurityManager = new SecurityManager(getActivity());
-        validateSecurityMeasures();
     }
 
     @Override
@@ -52,7 +50,7 @@ public class FingerprintDialog extends DialogFragment implements FingerprintHand
                              Bundle savedInstanceState) {
         View fragmentContent = inflater.inflate(R.layout.fragment_fingerprint_dialog, container, false);
         Bundle sensitiveInfoBundle = getArguments();
-        SensitiveInfo sensitiveInfo = (SensitiveInfo) sensitiveInfoBundle.getSerializable(SENSITIVE_INFO_BUNDLE_KEY);
+        sensitiveInfo = (SensitiveInfo) sensitiveInfoBundle.getSerializable(SENSITIVE_INFO_BUNDLE_KEY);
         ((TextView) fragmentContent.findViewById(R.id.sensitive_info_name)).setText("Attempting to open " + sensitiveInfo.getName() + " info");
 
         if (mFingerprintSecurityManager.isCipherInitialized()) {
@@ -68,27 +66,13 @@ public class FingerprintDialog extends DialogFragment implements FingerprintHand
         return fragmentContent;
     }
 
-    private void validateSecurityMeasures() {
-        if (mFingerprintSecurityManager.isKeyguardSecure()) {
-            //// TODO: 3/31/2016  "Lock screen security not enabled in Settings"
-            Log.i("Dale", "iskeyguardsecure");
-        }
 
-        if (mFingerprintSecurityManager.isFingerprintPermissionGranted()) {
-            ////// TODO: 3/31/2016 "Fingerprint authentication permission not enabled"
-            Log.i("Dale", "manifest permission for use fingerprint is granted");
-        }
-
-        if (mFingerprintSecurityManager.hasEnrolledFingerprints()) {
-            // TODO: "Register at least one fingerprint in Settings"
-            Log.i("Dale", "fingerprints are present");
-        }
-    }
 
     @Override
     public void onAuthenticationSuccess() {
         Log.i("Dale", "success");
-        ((ImageView) getView().findViewById(R.id.fingerprint_icon)).setImageResource(R.drawable.check);
+//        ((ImageView) getView().findViewById(R.id.fingerprint_icon)).setImageResource(R.drawable.check);
+        displayAuthenticationSuccessPopup(sensitiveInfo);
     }
 
     @Override
@@ -113,7 +97,12 @@ public class FingerprintDialog extends DialogFragment implements FingerprintHand
         Log.i("Dale", "error");
     }
 
-    private void displayAuthenticationSuccessPopup () {
-
+    private void displayAuthenticationSuccessPopup (SensitiveInfo sensitiveInfo) {
+        FingerprintAuthSuccess authSuccessPopup = new FingerprintAuthSuccess();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(SENSITIVE_INFO_BUNDLE_KEY, sensitiveInfo);
+        authSuccessPopup.setArguments(bundle);
+        authSuccessPopup.show(getActivity().getFragmentManager(), "myFrag");
+        dismiss();
     }
 }

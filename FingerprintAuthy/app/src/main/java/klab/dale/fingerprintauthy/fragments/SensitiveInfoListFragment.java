@@ -28,7 +28,7 @@ public class SensitiveInfoListFragment extends Fragment implements AdapterView.O
         mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Twitter account"));
         mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("PlayStation Network account"));
         mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("BPI Credit Card"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Porn"));
+        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Crush name"));
     }
 
     private View.OnClickListener mClickListener = new View.OnClickListener() {

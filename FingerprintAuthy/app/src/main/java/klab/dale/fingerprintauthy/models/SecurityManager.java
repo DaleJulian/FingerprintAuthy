@@ -10,6 +10,8 @@ import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -26,6 +28,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
+import com.google.zxing.*;
 /**
  * Created by John Dale Julian on 3/31/2016.
  */
@@ -47,6 +50,7 @@ public class SecurityManager {
         mKeyguardManager = (KeyguardManager) mAppContext.getSystemService(Context.KEYGUARD_SERVICE);
 
         generateKey();
+        validateSecurityMeasures();
     }
 
     private void generateKey() {
@@ -152,4 +156,24 @@ public class SecurityManager {
         return mKeyguardManager;
     }
 
+    private void validateSecurityMeasures() {
+        if (isKeyguardSecure()) {
+            //// TODO: 3/31/2016  "Lock screen security not enabled in Settings"
+            Toast.makeText(mAppContext, "Lock screen security not enabled in Settings", Toast.LENGTH_LONG).show();
+            Log.i("Dale", "iskeyguardsecure");
+            return;
+        }
+
+        if (isFingerprintPermissionGranted()) {
+            ////// TODO: 3/31/2016 "Fingerprint authentication permission not enabled"
+            Log.i("Dale", "manifest permission for use fingerprint is granted");
+            return;
+        }
+
+        if (hasEnrolledFingerprints()) {
+            // TODO: "Register at least one fingerprint in Settings"
+            Log.i("Dale", "fingerprints are present");
+            return;
+        }
+    }
 }
