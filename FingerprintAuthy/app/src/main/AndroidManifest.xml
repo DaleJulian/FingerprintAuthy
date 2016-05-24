@@ -12,6 +12,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/account_manager"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,6 +20,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SensitiveInfoContentActivity"
+            android:launchMode="singleInstance"/>
     </application>
 
 </manifest>

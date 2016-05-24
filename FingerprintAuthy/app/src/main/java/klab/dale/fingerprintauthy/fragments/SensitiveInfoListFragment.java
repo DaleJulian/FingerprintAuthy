@@ -1,5 +1,6 @@
 package klab.dale.fingerprintauthy.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -9,26 +10,29 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.util.List;
+
 import klab.dale.fingerprintauthy.R;
 import klab.dale.fingerprintauthy.adapters.SensitiveInfoAdapter;
+import klab.dale.fingerprintauthy.models.CreditCardInfo;
 import klab.dale.fingerprintauthy.models.SensitiveInfo;
 
 public class SensitiveInfoListFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private ListView mSensitiveInfoList;
     private SensitiveInfoAdapter mSensitiveInfoAdapter;
+    private SensitiveInfoContainer sensitiveInfoContainer = new SensitiveInfoContainer();
+
 
     private void setupSensitiveInfoList(View view) {
         mSensitiveInfoList = (ListView) view.findViewById(R.id.dataListView);
         mSensitiveInfoAdapter = new SensitiveInfoAdapter(getActivity(), mClickListener);
         mSensitiveInfoList.setAdapter(mSensitiveInfoAdapter);
 
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Unionbank Credit Card"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Facebook account"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Twitter account"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("PlayStation Network account"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("BPI Credit Card"));
-        mSensitiveInfoAdapter.addSensitiveInfo(new SensitiveInfo("Crush name"));
+        List<SensitiveInfo> sensitiveInfos = sensitiveInfoContainer.getSensitiveInfos();
+        for (SensitiveInfo si : sensitiveInfos) {
+            mSensitiveInfoAdapter.addSensitiveInfo(si);
+        }
     }
 
     private View.OnClickListener mClickListener = new View.OnClickListener() {
@@ -70,12 +74,12 @@ public class SensitiveInfoListFragment extends Fragment implements AdapterView.O
 
     @Override
     public void onDetach() {
+        super.onDetach();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         SensitiveInfo sensitiveInfo = (SensitiveInfo) view.getTag(R.id.TAG_SENSITIVE_INFO_ENTRY);
-        Log.i("Dale", sensitiveInfo.getName());
 
         showFingerprintDialogFragment(sensitiveInfo);
     }

@@ -30,7 +30,7 @@ public class FingerprintDialog extends DialogFragment implements FingerprintHand
 
     private TextView triesLeftVal;
 
-    SensitiveInfo sensitiveInfo;
+    private SensitiveInfo sensitiveInfo;
 
     private ImageView mFingerprintIcon;
 
